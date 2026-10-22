@@ -1,0 +1,68 @@
+{"name": "ping keeps the setup contract"}
+{"status":"ready"}
+{"name": "dsu two merges then a bridge"}
+{"states":[[4,2],[3,2],[2,4],[2,4],[2,4]]}
+{"name": "dsu single vertex self-union"}
+{"states":[[1,1]]}
+{"name": "dsu vertices but no operations"}
+{"states":[]}
+{"name": "dsu star growth with reversed repeat"}
+{"states":[[3,2],[2,3],[1,4],[1,4]]}
+{"name": "kruskal single isolated vertex"}
+{"cost":0,"edge_ids":[],"components":1}
+{"name": "prim single isolated vertex"}
+{"cost":0,"edge_ids":[],"components":1}
+{"name": "kruskal negative self-loops are never selected"}
+{"cost":0,"edge_ids":[],"components":2}
+{"name": "prim negative self-loops are never selected"}
+{"cost":0,"edge_ids":[],"components":2}
+{"name": "kruskal all-negative weights"}
+{"cost":-15,"edge_ids":[3,0,1],"components":1}
+{"name": "prim all-negative weights"}
+{"cost":-15,"edge_ids":[3,0,1],"components":1}
+{"name": "kruskal parallel edges keep the cheapest"}
+{"cost":2,"edge_ids":[1],"components":1}
+{"name": "prim parallel edges keep the cheapest"}
+{"cost":2,"edge_ids":[1],"components":1}
+{"name": "kruskal two components plus an isolate"}
+{"cost":10,"edge_ids":[0,1,3],"components":3}
+{"name": "prim two components plus an isolate"}
+{"cost":10,"edge_ids":[0,1,3],"components":3}
+{"name": "kruskal cycle of 1e9 edges (total beyond 32 bits)"}
+{"cost":4000000000,"edge_ids":[0,1,2,3],"components":1}
+{"name": "prim complete K4 of -1e9 edges (negative 64-bit total)"}
+{"cost":-3000000000,"edge_ids":[0,1,2],"components":1}
+{"name": "scc two cycles, a sink and duplicate cross pairs"}
+{"component":[0,0,0,1,1,2],"condensation":[[0,1],[0,2],[1,2]]}
+{"name": "scc one big cycle"}
+{"component":[0,0,0,0],"condensation":[]}
+{"name": "scc DAG with a duplicate edge"}
+{"component":[0,1,2],"condensation":[[0,1],[0,2],[1,2]]}
+{"name": "scc self-loops only"}
+{"component":[1,0],"condensation":[]}
+{"name": "scc single vertex"}
+{"component":[0],"condensation":[]}
+{"name": "topo diamond"}
+{"acyclic":true,"order":[0,2,1,3]}
+{"name": "topo cycle in a separate component"}
+{"acyclic":false,"order":[]}
+{"name": "topo edge to a finished vertex is not a cycle"}
+{"acyclic":true,"order":[0,2,1]}
+{"name": "topo single vertex"}
+{"acyclic":true,"order":[0]}
+{"name": "topo cycle closed by the last edge"}
+{"acyclic":false,"order":[]}
+{"name": "dag negative edge beats a direct edge"}
+{"acyclic":true,"distance":[0,2,5,1],"parent_edge":[-1,1,2,3]}
+{"name": "dag source in the middle, no relaxation from unreachable vertices"}
+{"acyclic":true,"distance":[null,null,0,-2],"parent_edge":[-1,-1,-1,2]}
+{"name": "dag cycle unreachable from the source"}
+{"acyclic":false,"distance":[],"parent_edge":[]}
+{"name": "dag parallel tied cheapest edges"}
+{"acyclic":true,"distance":[0,-3],"parent_edge":[-1,1]}
+{"name": "dag distance -1 and 0 are real costs"}
+{"acyclic":true,"distance":[0,-1,0],"parent_edge":[-1,0,1]}
+{"name": "dag negative 64-bit chain"}
+{"acyclic":true,"distance":[0,-1000000000,-2000000000,-3000000000],"parent_edge":[-1,0,1,2]}
+{"name": "dag unreachable self-loop"}
+{"acyclic":false,"distance":[],"parent_edge":[]}

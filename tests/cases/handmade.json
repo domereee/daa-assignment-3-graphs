@@ -1,0 +1,206 @@
+[
+  {
+    "name": "ping keeps the setup contract",
+    "input": {"task": "ping"},
+    "expected": {},
+    "why": "The supplied adapter must still answer {\"status\":\"ready\"}."
+  },
+  {
+    "name": "dsu two merges then a bridge",
+    "input": {"task": "dsu", "n": 5, "operations": [[0,1],[2,3],[1,3],[4,4],[0,3]]},
+    "expected": {"states": [[4,2],[3,2],[2,4],[2,4],[2,4]]},
+    "why": "{0,1} -> 4 comps, largest 2; {2,3} -> 3 comps, largest 2; 1-3 joins both pairs -> {0,1,2,3}: 2 comps, largest 4; self-union 4-4 and repeated union 0-3 change nothing."
+  },
+  {
+    "name": "dsu single vertex self-union",
+    "input": {"task": "dsu", "n": 1, "operations": [[0,0]]},
+    "expected": {"states": [[1,1]]},
+    "why": "A self-union never changes the partition; the only set has size 1."
+  },
+  {
+    "name": "dsu vertices but no operations",
+    "input": {"task": "dsu", "n": 3, "operations": []},
+    "expected": {"states": []},
+    "why": "No initial state is reported, so zero operations give an empty list."
+  },
+  {
+    "name": "dsu star growth with reversed repeat",
+    "input": {"task": "dsu", "n": 4, "operations": [[0,1],[0,2],[0,3],[3,2]]},
+    "expected": {"states": [[3,2],[2,3],[1,4],[1,4]]},
+    "why": "Each of the first three unions adds one vertex to 0's set; 3-2 is already connected."
+  },
+  {
+    "name": "kruskal single isolated vertex",
+    "input": {"task": "kruskal", "n": 1, "edges": []},
+    "expected": {"cost": 0, "components": 1},
+    "why": "One isolate is one component; the forest has n-c = 0 edges."
+  },
+  {
+    "name": "prim single isolated vertex",
+    "input": {"task": "prim", "n": 1, "edges": []},
+    "expected": {"cost": 0, "components": 1},
+    "why": "Same graph as the Kruskal case."
+  },
+  {
+    "name": "kruskal negative self-loops are never selected",
+    "input": {"task": "kruskal", "n": 2, "edges": [[0,0,-5],[1,1,-7]]},
+    "expected": {"cost": 0, "components": 2},
+    "why": "Loops join nothing, so both vertices stay isolated even though the loop weights are negative."
+  },
+  {
+    "name": "prim negative self-loops are never selected",
+    "input": {"task": "prim", "n": 2, "edges": [[0,0,-5],[1,1,-7]]},
+    "expected": {"cost": 0, "components": 2},
+    "why": "Same graph as the Kruskal case."
+  },
+  {
+    "name": "kruskal all-negative weights",
+    "input": {"task": "kruskal", "n": 4, "edges": [[0,1,-3],[1,2,-2],[2,3,-1],[0,3,-10],[0,2,5]]},
+    "expected": {"cost": -15, "components": 1},
+    "why": "Ascending: -10 (0-3), -3 (0-1), -2 (1-2) join all four vertices; -1 and 5 would close cycles. -10-3-2 = -15."
+  },
+  {
+    "name": "prim all-negative weights",
+    "input": {"task": "prim", "n": 4, "edges": [[0,1,-3],[1,2,-2],[2,3,-1],[0,3,-10],[0,2,5]]},
+    "expected": {"cost": -15, "components": 1},
+    "why": "Same graph; the optimum is unique: {0-3, 0-1, 1-2}."
+  },
+  {
+    "name": "kruskal parallel edges keep the cheapest",
+    "input": {"task": "kruskal", "n": 2, "edges": [[0,1,5],[0,1,2],[1,0,2]]},
+    "expected": {"cost": 2, "components": 1},
+    "why": "Exactly one edge is needed; IDs 1 and 2 tie at weight 2, either is valid."
+  },
+  {
+    "name": "prim parallel edges keep the cheapest",
+    "input": {"task": "prim", "n": 2, "edges": [[0,1,5],[0,1,2],[1,0,2]]},
+    "expected": {"cost": 2, "components": 1},
+    "why": "Same graph as the Kruskal case."
+  },
+  {
+    "name": "kruskal two components plus an isolate",
+    "input": {"task": "kruskal", "n": 6, "edges": [[0,1,1],[1,2,2],[0,2,3],[3,4,7]]},
+    "expected": {"cost": 10, "components": 3},
+    "why": "Components {0,1,2}, {3,4}, {5}; triangle MST = 1+2, plus 7 = 10; n-c = 3 edges."
+  },
+  {
+    "name": "prim two components plus an isolate",
+    "input": {"task": "prim", "n": 6, "edges": [[0,1,1],[1,2,2],[0,2,3],[3,4,7]]},
+    "expected": {"cost": 10, "components": 3},
+    "why": "Prim must restart at 3 and again at 5."
+  },
+  {
+    "name": "kruskal cycle of 1e9 edges (total beyond 32 bits)",
+    "input": {"task": "kruskal", "n": 5, "edges": [[0,1,1000000000],[1,2,1000000000],[2,3,1000000000],[3,4,1000000000],[0,4,1000000000]]},
+    "expected": {"cost": 4000000000, "components": 1},
+    "why": "Any 4 of the 5 equal cycle edges form an MST; 4 * 1e9 = 4e9 > 2^31-1."
+  },
+  {
+    "name": "prim complete K4 of -1e9 edges (negative 64-bit total)",
+    "input": {"task": "prim", "n": 4, "edges": [[0,1,-1000000000],[0,2,-1000000000],[0,3,-1000000000],[1,2,-1000000000],[1,3,-1000000000],[2,3,-1000000000]]},
+    "expected": {"cost": -3000000000, "components": 1},
+    "why": "A spanning tree of K4 has 3 edges, all -1e9: -3e9 < -2^31."
+  },
+  {
+    "name": "scc two cycles, a sink and duplicate cross pairs",
+    "input": {"task": "scc", "n": 6, "edges": [[0,1],[1,2],[2,0],[2,3],[3,4],[4,3],[4,5],[0,5],[1,3]]},
+    "expected": {"group": [0,0,0,3,3,5]},
+    "why": "{0,1,2} and {3,4} are cycles, 5 is a sink. Cross pairs: A->B (from 2-3 and 1-3, reported once), B->C (4-5), A->C (0-5)."
+  },
+  {
+    "name": "scc one big cycle",
+    "input": {"task": "scc", "n": 4, "edges": [[0,1],[1,2],[2,3],[3,0]]},
+    "expected": {"group": [0,0,0,0]},
+    "why": "Every vertex reaches every other; condensation is empty."
+  },
+  {
+    "name": "scc DAG with a duplicate edge",
+    "input": {"task": "scc", "n": 3, "edges": [[0,1],[1,2],[0,2],[0,2]]},
+    "expected": {"group": [0,1,2]},
+    "why": "No cycles, so three singleton SCCs and three distinct condensation pairs (0-2 appears twice in input, once in output)."
+  },
+  {
+    "name": "scc self-loops only",
+    "input": {"task": "scc", "n": 2, "edges": [[0,0],[1,1]]},
+    "expected": {"group": [0,1]},
+    "why": "A self-loop is internal to its singleton SCC; no condensation pairs."
+  },
+  {
+    "name": "scc single vertex",
+    "input": {"task": "scc", "n": 1, "edges": []},
+    "expected": {"group": [0]},
+    "why": "One isolated vertex is one SCC."
+  },
+  {
+    "name": "topo diamond",
+    "input": {"task": "topo", "n": 4, "edges": [[0,1],[0,2],[1,3],[2,3]]},
+    "expected": {"acyclic": true},
+    "why": "0 before 1 and 2, both before 3; [0,1,2,3] and [0,2,1,3] are both valid."
+  },
+  {
+    "name": "topo cycle in a separate component",
+    "input": {"task": "topo", "n": 5, "edges": [[0,1],[2,3],[3,2]]},
+    "expected": {"acyclic": false},
+    "why": "2 -> 3 -> 2 is a cycle even though it is not reachable from vertex 0; order must be []."
+  },
+  {
+    "name": "topo edge to a finished vertex is not a cycle",
+    "input": {"task": "topo", "n": 3, "edges": [[0,1],[0,2],[2,1]]},
+    "expected": {"acyclic": true},
+    "why": "DFS from 0 finishes 1 first, then 2 -> 1 hits a finished vertex: a cross edge, not a back edge. Valid order: [0,2,1]."
+  },
+  {
+    "name": "topo single vertex",
+    "input": {"task": "topo", "n": 1, "edges": []},
+    "expected": {"acyclic": true},
+    "why": "The only order is [0]."
+  },
+  {
+    "name": "topo cycle closed by the last edge",
+    "input": {"task": "topo", "n": 4, "edges": [[0,1],[1,2],[2,3],[3,1]]},
+    "expected": {"acyclic": false},
+    "why": "1 -> 2 -> 3 -> 1."
+  },
+  {
+    "name": "dag negative edge beats a direct edge",
+    "input": {"task": "dag", "n": 4, "source": 0, "edges": [[0,3,10],[0,1,2],[1,2,3],[2,3,-4]]},
+    "expected": {"acyclic": true, "distance": [0,2,5,1]},
+    "why": "0->1->2->3 costs 2+3-4 = 1 < 10 (direct edge 0). Parents: 1 via edge 1, 2 via edge 2, 3 via edge 3."
+  },
+  {
+    "name": "dag source in the middle, no relaxation from unreachable vertices",
+    "input": {"task": "dag", "n": 4, "source": 2, "edges": [[0,1,5],[1,2,1],[2,3,-2],[0,3,1]]},
+    "expected": {"acyclic": true, "distance": [null,null,0,-2]},
+    "why": "Only 3 is reachable from 2 (edge 2, weight -2). Vertex 0 is unreachable, so edge 3 (0->3) must not be relaxed."
+  },
+  {
+    "name": "dag cycle unreachable from the source",
+    "input": {"task": "dag", "n": 5, "source": 0, "edges": [[0,1,1],[2,3,1],[3,4,1],[4,2,1]]},
+    "expected": {"acyclic": false},
+    "why": "2 -> 3 -> 4 -> 2 is a cycle elsewhere in the graph: the whole graph is not a DAG."
+  },
+  {
+    "name": "dag parallel tied cheapest edges",
+    "input": {"task": "dag", "n": 2, "source": 0, "edges": [[0,1,5],[0,1,-3],[0,1,-3]]},
+    "expected": {"acyclic": true, "distance": [0,-3]},
+    "why": "Best weight -3 is achieved by edge 1 and edge 2; either parent_edge[1] is valid, edge 0 is not."
+  },
+  {
+    "name": "dag distance -1 and 0 are real costs",
+    "input": {"task": "dag", "n": 3, "source": 0, "edges": [[0,1,-1],[1,2,1]]},
+    "expected": {"acyclic": true, "distance": [0,-1,0]},
+    "why": "-1 and 0 are finite distances, not 'unreachable' markers."
+  },
+  {
+    "name": "dag negative 64-bit chain",
+    "input": {"task": "dag", "n": 4, "source": 0, "edges": [[0,1,-1000000000],[1,2,-1000000000],[2,3,-1000000000]]},
+    "expected": {"acyclic": true, "distance": [0,-1000000000,-2000000000,-3000000000]},
+    "why": "-3e9 does not fit 32 bits."
+  },
+  {
+    "name": "dag unreachable self-loop",
+    "input": {"task": "dag", "n": 3, "source": 0, "edges": [[0,1,1],[2,2,0]]},
+    "expected": {"acyclic": false},
+    "why": "A self-loop is a directed cycle, even when unreachable from the source."
+  }
+]

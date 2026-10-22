@@ -1,0 +1,26 @@
+Language: Java (same build and 'java -Xmx384m Main' command as tools/run.py)
+[handmade]     34/34 passed  (actual outputs: tests/results/handmade_actual.jsonl)
+[random-small] 1500/1500 passed  (seed 20261019, brute-force references)
+[checker]      25/25 verdicts correct (9 alternatives accepted, 16 invalid witnesses rejected)
+[full-limits]  19/19 passed (each in its own process; time includes JVM start + JSON I/O)
+  PASS    0.77s  dsu random n=1e5 q=2.5e5                             final=[687, 99302]
+  PASS    0.60s  kruskal random n=1e5 m=2.5e5                         cost=-52897719428648 components=705
+  PASS    0.76s  prim same random graph                               cost=-52897719428648 components=705
+  PASS    0.37s  kruskal deep path, cost 99999e9                      cost=99999000000000 components=1
+  PASS    0.34s  prim deep path, cost 99999e9                         cost=99999000000000 components=1
+  PASS    0.54s  prim many parallel/tied edges n=1e5 (99000 isolates) cost=-999000000000 components=99001
+  PASS    0.56s  kruskal many parallel/tied edges n=1e5               cost=-999000000000 components=99001
+  PASS    0.62s  scc random n=1e5 m=2.5e5                             sccs=20045 pairs=26026
+  PASS    0.38s  scc deep chain closed into one cycle                 sccs=1 pairs=0
+  PASS    0.46s  scc deep chain, 1e5 singleton SCCs                   sccs=100000 pairs=99999
+  PASS    0.48s  topo random DAG n=1e5 m=2.5e5                        acyclic=True
+  PASS    0.36s  topo deep chain                                      acyclic=True
+  PASS    0.30s  topo deep chain with one back edge                   acyclic=False
+  PASS    0.50s  dag random DAG n=1e5 m=2.5e5, source = first in rank acyclic=True reachable=196 min=-2264594344
+  PASS    0.54s  dag DAG with backbone, all reachable, m=2.5e5        acyclic=True reachable=100000 min=-1850914458161
+  PASS    0.64s  dag same DAG, random source                          acyclic=True reachable=7 min=-737785693
+  PASS    0.42s  dag deep chain of -1e9 (distance -99999e9)           acyclic=True reachable=100000 min=-99999000000000
+  PASS    0.37s  dag deep chain, source in the middle                 acyclic=True reachable=50000 min=-49999000000000
+  PASS    0.33s  dag large graph with a cycle (source elsewhere)      acyclic=False
+[state-reset]  105/105 answers valid in ONE process (handmade x3 + 3 full-limit requests interleaved, 1.19s)
+ALL TESTS PASSED
